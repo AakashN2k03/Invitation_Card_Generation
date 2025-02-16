@@ -1,13 +1,10 @@
+import time
 import os
 import streamlit as st
 from huggingface_hub import InferenceClient
 from PIL import Image
 from io import BytesIO
-from dotenv import load_dotenv
-load_dotenv()
 
-# Fetch the API key from environment variables
-API_KEY = os.getenv("HF_TOKEN")
 
 
 # Streamlit UI
@@ -42,10 +39,11 @@ if generate_button:
         
         # Initialize the InferenceClient with your Hugging Face API token
         client = InferenceClient(
-            api_key=API_KEY  # Replace with your Hugging Face token
+            api_key="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" # Replace with your Hugging Face token
         )
         
-       
+        # Start the timer
+        start_time = time.time()
         
         # Generate an image using the text-to-image model
         image = client.text_to_image(
@@ -65,6 +63,10 @@ if generate_button:
         # Display the image in Streamlit
         st.image(image, caption=f"Generated {event} Invitation Card", use_column_width=True)
         
+        # Calculate the time taken
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        st.write(f"Process took {elapsed_time:.2f} seconds.")
         
         # Provide a download button for the generated image
         st.download_button(label="Download Image", data=image_bytes, file_name=f"{event.lower().replace(' ', '_')}_invitation_card.png", mime="image/png")
